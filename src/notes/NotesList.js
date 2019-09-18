@@ -11,7 +11,7 @@ class NotesList extends React.Component {
         }
         return (
             <div>
-                {this.props.notes.map(x => {return (<NotesListItem key={x._id} {...x}/>)})}
+                {this.props.notes.map(x => {return (<NotesListItem key={x._id} {...x} onDelete={this.props.onDelete}/>)})}
             </div>
         );
     }

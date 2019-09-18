@@ -1,11 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { NotesList } from './NotesList';
-import { getNotes } from './NotesApi';
+import { getNotes, deleteNote } from './NotesApi';
 
 class NotesPageCore extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { notes: [], errorOnLoad: false };
+        this.state = { notes: [], errorOccurred: false };
     }
 
     componentDidMount() {
@@ -15,19 +16,26 @@ class NotesPageCore extends React.Component {
     render() {
         return (
             <div>
-                <NotesList notes={this.state.notes} errorOnLoad={this.state.errorOnLoad}/>
+                <Link to="/notes/create">Create</Link>
+                <NotesList notes={this.state.notes} errorOccurred={this.state.errorOccurred} onDelete={this.handleNoteDelete} />
             </div>
         );
     }
 
     searchNotes() {
-        this.setState({ notes: [], errorOnLoad: false });
+        this.setState({...this.state, errorOccurred: false });
 
         getNotes()
-            .then(notes => this.setState({notes, errorOnLoad: false}))
+            .then(notes => this.setState({notes, errorOccurred: false}))
             .catch(err => {
-                this.setState({notes: [], errorOnLoad: true});
+                this.setState({...this.state, errorOccurred: true});
             });
+    }
+
+    handleNoteDelete = (id) => {
+        deleteNote(id)
+            .then(() => this.searchNotes())
+            .catch(err => this.setState({...this.state, errorOccurred: true}));
     }
 }
 
