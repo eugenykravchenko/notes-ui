@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { NotesList } from './NotesList';
 import { getNotes, deleteNote } from './NotesApi';
 
@@ -16,8 +16,10 @@ class NotesPageCore extends React.Component {
     render() {
         return (
             <div>
-                <Link to="/notes/create">Create</Link>
                 <NotesList notes={this.state.notes} errorOccurred={this.state.errorOccurred} onDelete={this.handleNoteDelete} />
+                <div class="mt-1">
+                    <button type="button" class="btn btn-dark float-right" onClick={this.handleNoteCreate}>Create</button>
+                </div>
             </div>
         );
     }
@@ -32,6 +34,10 @@ class NotesPageCore extends React.Component {
             });
     }
 
+    handleNoteCreate = () => {
+        this.props.history.push('/notes/create');
+    }
+
     handleNoteDelete = (id) => {
         deleteNote(id)
             .then(() => this.searchNotes())
@@ -39,4 +45,4 @@ class NotesPageCore extends React.Component {
     }
 }
 
-export {NotesPageCore as NotesPage};
+export const NotesPage = withRouter(NotesPageCore);
